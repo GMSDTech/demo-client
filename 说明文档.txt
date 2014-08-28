@@ -1,0 +1,63 @@
+共鸣时代科技 demo 客户端说明文档
+
+==================================================================
+
+1. 程序框架说明
+此 demo 客户端演示如何与共鸣后台接口交互，可作为合作伙伴开发共鸣交互接口的 SDK，也可作为自行开发交互接口的参考。
+
+此 demo 客户端使用 Java 编写，选用 Gradle 框架编译环境（http://www.gradle.org/），框架配置文件为 build.gradle。所有开放接口使用HTTPS 协议加密传输，方式为 GET 或 POST。共鸣后台使用中国金融认证中心（http://www.cfca.com.cn/，以下简称 CFCA）签发的证书加密传输数据，客户端 Java 环境需要导入 CFCA 的根证书以保证客户端与共鸣后台 SSL 协议握手成功。
+
+2. CFCA 根证书导入
+根证书已存放在 demo-client/cacert 目录下，文件名为 CFCA_GT_CA.crt，客户也可到 CFCA 网站自行下载。找到当前环境的 JVM 所在路径，以 MacBook 为例，运行以下命令导入根证书：
+
+$ sudo keytool -import -alias CFCA -keystore /Library/Java/JavaVirtualMachines/jdk1.7.0_60.jdk/Contents/Home/jre/lib/security/cacerts -file CFCA_GT_CA.crt
+
+注：证书库默认密码为 "changeit"。
+
+
+2. 编译程序
+demo 客户端可在命令行下编译运行，也可在 IDE 环境下编译运行。
+
+2.1 命令行下编译运行
+进入 demo-client 目录，运行 gradlew 脚本进行编译：
+
+$ ./gradlew build
+
+首次编译，Gradle 会自动从远程下载依赖的库（如 Spring 组件），请在有网络连接的环境进行首次编译。编译成功后，即可开始运行客户端程序：
+
+$ java -jar build/libs/gm-demo-client-0.1.0.jar
+
+2.2 在 IntelliJ 下编译运行
+首先生成 IntelliJ 工程文件：
+
+$ ./gradlew idea
+
+此命令会在当前目录生成 demo-client.iml, demo-client.ipr, demo-client.iws 三个文件，用 IntelliJ 打开工程文件 demo-client.ipr，正常编译运行即可。
+
+3. 程序使用说明
+
+3.1 代码目录
+所有 demo 客户端代码存放在 demo-client/src 目录下。
+
+3.2 接口使用例子
+在 Application.java 主函数中，包含共鸣接口的初始化以及各种接口调用样例。
+
+3.3 接口初始化
+共鸣接口定义都在 Gongming.java 中，连接参数主要包含以下字段：
+
+Hard-coded 部分：
+  PROTOCOL        连接协议，为 https
+  HOST            共鸣服务器地址，测试地址目前为 admin-test.gongmingkeji.com
+  PORT            端口号，默认空，使用协议默认端口
+
+参数化部分：
+  merchantId      商户ID，由共鸣提供给商户
+  merchantSecreet 商户密钥，由共鸣提供给商户
+
+3.4 命名规则
+对于一个接口，请求类和响应类的命名分别为 <接口名首字母大写>Request 以及 <接口名首字母大写>Response。例如查询理财计划的请求类和响应类的命名分别为
+
+  QueryPlansRequest
+  QueryPlansResponse
+
+

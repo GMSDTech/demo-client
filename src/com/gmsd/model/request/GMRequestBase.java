@@ -5,6 +5,7 @@
 package com.gmsd.model.request;
 
 import com.gmsd.api.APISigner;
+import java.util.logging.Logger;
 
 import java.security.InvalidKeyException;
 

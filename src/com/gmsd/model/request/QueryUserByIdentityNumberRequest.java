@@ -27,6 +27,6 @@ public class QueryUserByIdentityNumberRequest extends GMRequestBase {
   @Override
   protected String toRawQuery() {
     return "merchantId=" + this.merchantId + "&" +
-        "identityNumber=" + this.identityNumber + "&";
+        "identityNumber=" + this.identityNumber;
   }
 }
