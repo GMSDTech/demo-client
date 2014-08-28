@@ -5,7 +5,7 @@
 package com.gmsd.model;
 
 /**
- * 流量端订单。
+ * 理财计划购买订单。
  */
 public class Order {
   /**
@@ -21,12 +21,12 @@ public class Order {
    * 有参数构造方法
    *
    * @param id            id
-   * @param userId       购买人id
+   * @param userId        购买人id
    * @param planId        计划id
    * @param merchantId    商户号
    * @param orderAmount   订单金额
    * @param successAmount 扣款金额
-   * @param requestDate   生成日期
+   * @param createDate    生成日期
    * @param effectiveDate 生效日期
    * @param endDate       结束日期
    * @param status        订单状态
@@ -37,7 +37,7 @@ public class Order {
                Long merchantId,
                String orderAmount,
                String successAmount,
-               String requestDate,
+               String createDate,
                String effectiveDate,
                String endDate,
                OrderStatus status) {
@@ -47,7 +47,7 @@ public class Order {
     this.merchantId = merchantId;
     this.orderAmount = orderAmount;
     this.successAmount = successAmount;
-    this.requestDate = requestDate;
+    this.createDate = createDate;
     this.effectiveDate = effectiveDate;
     this.endDate = endDate;
     this.status = status;
@@ -84,17 +84,17 @@ public class Order {
   public String successAmount;
 
   /**
-   * 下单时间 YYYY/MM/DD HH:mm:ss Z
+   * 下单时间 YYYY-MM-DD HH:mm:ss Z
    */
-  public String requestDate;
+  public String createDate;
 
   /**
-   * 订单完成支付和满标后，实际生效时间 YYYY/MM/DD
+   * 订单完成支付和满标后，实际生效时间 YYYY-MM-dd
    */
   public String effectiveDate;
 
   /**
-   * 预期还款结束日期 YYYY/MM/DD HH:mm:ss Z
+   * 预期还款结束日期 YYYY-MM-dd
    */
   public String endDate;
 
