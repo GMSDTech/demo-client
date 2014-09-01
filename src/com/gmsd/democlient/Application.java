@@ -58,13 +58,13 @@ public class Application {
 
       logger.info("更新用户信息");
       GongmingRequest updateUserRequest = new GongmingRequest()
-          .addParameter("merchantId", merchantId.toString())            // 商户号
-          .addParameter("userId", userId.toString())                    // 用户ID
-          .addParameter("email", "somebody@somewhere.com")              // 用户 email 地址
-          .addParameter("nickname", "Nick")                             // 用户昵称
-          .addParameter("gender", "男")                                 // 用户性别
-          .addParameter("adderss", "北京市朝阳区朝外SOHO")                // 用户地址
-          .addParameter("educationLevel", "本科");                      // 用户学历
+          .addParameter("merchantId", merchantId.toString())            // 商户号，必填
+          .addParameter("userId", userId.toString())                    // 用户ID，必填
+          .addParameter("email", "somebody@somewhere.com")              // 用户 email 地址，可选
+          .addParameter("nickname", "Nick")                             // 用户昵称，可选
+          .addParameter("gender", "男")                                 // 用户性别，可选
+          .addParameter("adderss", "北京市朝阳区朝外SOHO")                // 用户地址，可选
+          .addParameter("educationLevel", "本科");                      // 用户学历，可选
       UpdateUserResponse updateUserResponse = gongming.updateUser(updateUserRequest);
       logger.info("更新用户信息成功");
 
