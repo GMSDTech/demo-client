@@ -8,18 +8,18 @@
 此 demo 客户端使用 Java 编写，选用 Gradle 框架编译环境（http://www.gradle.org/），框架配置文件为 build.gradle。所有开放接口使用HTTPS 协议加密传输，方式为 GET 或 POST。共鸣后台使用中国金融认证中心（http://www.cfca.com.cn/，以下简称 CFCA）签发的证书加密传输数据，客户端 Java 环境需要导入 CFCA 的根证书以保证客户端与共鸣后台 SSL 协议握手成功。
 
 2. CFCA 根证书导入
-根证书已存放在 demo-client/cacert 目录下，文件名为 CFCA_GT_CA.crt，客户也可到 CFCA 网站自行下载。找到当前环境的 JVM 所在路径，以 MacBook 为例，运行以下命令导入根证书：
+根证书已存放在 demo-client-master/cacert 目录下，文件名为 CFCA_GT_CA.crt，客户也可到 CFCA 网站自行下载。找到当前环境的 JVM 所在路径，以 MacBook 为例，运行以下命令导入根证书：
 
-$ sudo keytool -import -alias CFCA -keystore /Library/Java/JavaVirtualMachines/jdk1.7.0_60.jdk/Contents/Home/jre/lib/security/cacerts -file CFCA_GT_CA.crt
+$ sudo keytool -import -alias CFCA -keystore /Library/Java/JavaVirtualMachines/jdk1.7.0_60.jdk/Contents/Home/jre/lib/security/cacerts -file cacerts/CFCA_GT_CA.crt
 
-注：证书库默认密码为 "changeit"。
+注：第一次输入的密码为 root 密码（如果以非 root 用户运行命令），第二次输入密码为证书库默认密码，为 "changeit"。
 
 
 2. 编译程序
 demo 客户端可在命令行下编译运行，也可在 IDE 环境下编译运行。
 
 2.1 命令行下编译运行
-进入 demo-client 目录，运行 gradlew 脚本进行编译：
+进入 demo-client-master 目录，运行 gradlew 脚本进行编译：
 
 $ ./gradlew build
 
@@ -32,12 +32,12 @@ $ java -jar build/libs/gm-demo-client-0.1.0.jar
 
 $ ./gradlew idea
 
-此命令会在当前目录生成 demo-client.iml, demo-client.ipr, demo-client.iws 三个文件，用 IntelliJ 打开工程文件 demo-client.ipr，正常编译运行即可。
+此命令会在当前目录生成 demo-client-master.iml, demo-client-master.ipr, demo-client-master.iws 三个文件，用 IntelliJ 打开工程文件 demo-client-master.ipr，正常编译运行即可。
 
 3. 程序使用说明
 
 3.1 代码目录
-所有 demo 客户端代码存放在 demo-client/src 目录下。
+所有 demo 客户端代码存放在 demo-client-master/src 目录下。
 
 3.2 接口使用例子
 在 Application.java 主函数中，包含共鸣接口的初始化以及各种接口调用样例。
