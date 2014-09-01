@@ -22,7 +22,7 @@ import java.security.InvalidKeyException;
 public class Gongming {
 
   private static final String PROTOCOL = "https";
-  private static final String HOST = "admin-test.gongmingkeji.com";
+  private static final String HOST = "api-test.gongmingkeji.com";
   private static final Integer PORT = null;
 
   private Long merchantId;

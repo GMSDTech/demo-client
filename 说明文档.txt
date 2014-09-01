@@ -18,7 +18,13 @@ $ sudo keytool -import -alias CFCA -keystore /Library/Java/JavaVirtualMachines/j
 2. 编译程序
 demo 客户端可在命令行下编译运行，也可在 IDE 环境下编译运行。
 
-2.1 命令行下编译运行
+2.1 编译前在代码中输入商户号和商户密钥
+在 src/com/gmsd/democlient/application.java 文件中，输入私有静态字段 merchantId 和 merchantSecret 字段。
+
+private static Long merchantId = 0L;             // 在此处输入商户ID
+private static String merchantSecret = "";       // 在此处写入商户密钥
+
+2.2 命令行下编译运行
 进入 demo-client-master 目录，运行 gradlew 脚本进行编译：
 
 $ ./gradlew build
@@ -27,12 +33,12 @@ $ ./gradlew build
 
 $ java -jar build/libs/gm-demo-client-0.1.0.jar
 
-2.2 在 IntelliJ 下编译运行
+2.3 在 IntelliJ 下编译运行
 首先生成 IntelliJ 工程文件：
 
 $ ./gradlew idea
 
-此命令会在当前目录生成 demo-client-master.iml, demo-client-master.ipr, demo-client-master.iws 三个文件，用 IntelliJ 打开工程文件 demo-client-master.ipr，正常编译运行即可。
+此命令会在当前目录生成 demo-client-master.iml, demo-client-master.ipr, demo-client-master.iws 三个文件，用 IntelliJ 打开工程文件 demo-client-master.ipr，正常编译运行即可。同理，可用类似方法生成 Eclipse 工程文件并在 Eclipse 中编译运行客户端代码。
 
 3. 程序使用说明
 
@@ -47,7 +53,7 @@ $ ./gradlew idea
 
 Hard-coded 部分：
   PROTOCOL        连接协议，为 https
-  HOST            共鸣服务器地址，测试地址目前为 admin-test.gongmingkeji.com
+  HOST            共鸣服务器地址，测试地址目前为 api-test.gongmingkeji.com
   PORT            端口号，默认空，使用协议默认端口
 
 参数化部分：
