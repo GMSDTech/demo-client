@@ -55,9 +55,9 @@ Hard-coded 部分：
   merchantSecreet 商户密钥，由共鸣提供给商户
 
 3.4 命名规则
-对于一个接口，请求类和响应类的命名分别为 <接口名首字母大写>Request 以及 <接口名首字母大写>Response。例如查询理财计划的请求类和响应类的命名分别为
+对于一个接口，请求类为 GongmingRequest，响应类的命名为 <接口名首字母大写>Response。例如查询理财计划的请求类和响应类的命名分别为
 
-  QueryPlansRequest
+  GongmingRequest
   QueryPlansResponse
 
 
