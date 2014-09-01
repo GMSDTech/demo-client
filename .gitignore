@@ -12,7 +12,7 @@ dump
 .idea/modules/
 .idea/workspace.xml
 .idea/modules.xml
-.idea
+.idea/
 *.iml
 *.ipr
 *.iws
@@ -40,3 +40,4 @@ RUNNING_PID
 
 # gradlew 
 .gradle
+build/

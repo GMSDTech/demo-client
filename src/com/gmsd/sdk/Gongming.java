@@ -6,7 +6,7 @@ package com.gmsd.sdk;
 
 import com.gmsd.model.exception.GongmingApplicationException;
 import com.gmsd.model.exception.GongmingConnectionException;
-import com.gmsd.model.request.*;
+import com.gmsd.model.request.GongmingRequest;
 import com.gmsd.model.response.*;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -28,17 +28,33 @@ public class Gongming {
   private Long merchantId;
   private String merchantSecret;
 
-  private static final String CREATE_USER = "/v1/createUser";
-  private static final String QUERY_USER_BY_IDENTITY_NUMBER = "/v1/queryUserByIdentityNumber";
-
   private static final String QUERY_PLANS = "/v1/queryPlans";
 
-  private static final String ORDER_WITHOUT_PAYMENT = "/v1/orderWithoutPayment";
+  private static final String CREATE_USER = "/v1/createUser";
+  private static final String BIND_BANK_CARD = "/v1/bindBankCard";
+  private static final String UPDATE_USER = "/v1/updateUser";
+  private static final String QUERY_USER_BY_IDENTITY_NUMBER = "/v1/queryUserByIdentityNumber";
+
+  private static final String ORDER_WITH_PAYMENT = "/v1/orderWithPayment";
+  private static final String REDEEM = "/v1/redeem";
+
   private static final String QUERY_ORDER = "/v1/queryOrder";
   private static final String QUERY_ORDERS_BY_DATE = "/v1/queryOrdersByDate";
   private static final String QUERY_ORDER_INTEREST = "/v1/queryOrderInterest";
 
-  private static final String CONFIRM_PAYMENT = "/v1/confirmPayment";
+  /**
+   * 理财计划查询
+   *
+   * @param request 理财计划查询请求
+   * @return QueryPlansResponse 理财计划查询结果
+   * @throws GongmingConnectionException  连接异常
+   * @throws GongmingApplicationException 后台异常
+   */
+  public QueryPlansResponse queryPlans(GongmingRequest request)
+      throws GongmingConnectionException, GongmingApplicationException {
+
+    return call(QUERY_PLANS, false, request, QueryPlansResponse.class);
+  }
 
   /**
    * 初始化共鸣接口
@@ -59,16 +75,38 @@ public class Gongming {
    * @throws GongmingConnectionException  连接异常
    * @throws GongmingApplicationException 后台异常
    */
-  public CreateUserResponse createUser(CreateUserRequest request)
+  public CreateUserResponse createUser(GongmingRequest request)
       throws GongmingApplicationException, GongmingConnectionException {
 
-    URL path = getPath(CREATE_USER);
-    CreateUserResponse response = POST(path, request, CreateUserResponse.class);
+    return call(CREATE_USER, true, request, CreateUserResponse.class);
+  }
 
-    if (response.code != GMResponseCode.COMMON_SUCCESS) {
-      throw new GongmingApplicationException(response.code.toString(), response.errorMessage);
-    }
-    return response;
+  /**
+   * 支付平台绑卡
+   *
+   * @param request 绑卡请求
+   * @return 请求结果
+   * @throws GongmingApplicationException
+   * @throws GongmingConnectionException
+   */
+  public BindBankCardResponse bindBankCard(GongmingRequest request)
+      throws GongmingApplicationException, GongmingConnectionException {
+
+    return call(BIND_BANK_CARD, true, request, BindBankCardResponse.class);
+  }
+
+  /**
+   * 更新用户信息
+   *
+   * @param request 更新用户信息请求
+   * @return UdateUserResponse 更新结果
+   * @throws GongmingApplicationException
+   * @throws GongmingConnectionException
+   */
+  public UpdateUserResponse updateUser(GongmingRequest request)
+      throws GongmingApplicationException, GongmingConnectionException {
+
+    return call(UPDATE_USER, true, request, UpdateUserResponse.class);
   }
 
   /**
@@ -79,56 +117,38 @@ public class Gongming {
    * @throws GongmingConnectionException  连接异常
    * @throws GongmingApplicationException 后台异常
    */
-  public QueryUserByIdentityNumberResponse queryUserByIdentityNumber(QueryUserByIdentityNumberRequest request)
+  public QueryUserByIdentityNumberResponse queryUserByIdentityNumber(GongmingRequest request)
       throws GongmingConnectionException, GongmingApplicationException {
 
-    URL path = getPath(QUERY_USER_BY_IDENTITY_NUMBER);
-    QueryUserByIdentityNumberResponse response = GET(path, request, QueryUserByIdentityNumberResponse.class);
-
-    if (response.code != GMResponseCode.COMMON_SUCCESS) {
-      throw new GongmingApplicationException(response.code.toString(), response.errorMessage);
-    }
-    return response;
-  }
-
-  /**
-   * 理财计划查询
-   *
-   * @param request 理财计划查询请求
-   * @return QueryPlansResponse 理财计划查询结果
-   * @throws GongmingConnectionException  连接异常
-   * @throws GongmingApplicationException 后台异常
-   */
-  public QueryPlansResponse queryPlans(QueryPlansRequest request)
-      throws GongmingConnectionException, GongmingApplicationException {
-
-    URL path = getPath(QUERY_PLANS);
-    QueryPlansResponse response = GET(path, request, QueryPlansResponse.class);
-
-    if (response.code != GMResponseCode.COMMON_SUCCESS) {
-      throw new GongmingApplicationException(response.code.toString(), response.errorMessage);
-    }
-    return response;
+    return call(QUERY_USER_BY_IDENTITY_NUMBER, false, request, QueryUserByIdentityNumberResponse.class);
   }
 
   /**
    * 理财计划申购
    *
-   * @param request 理财计划申购请求
-   * @return OrderResponse 理财计划申购结果
-   * @throws GongmingConnectionException  连接异常
-   * @throws GongmingApplicationException 后台异常
+   * @param request 申购请求
+   * @return OrderWithPaymentResponse 申购结果
+   * @throws GongmingApplicationException
+   * @throws GongmingConnectionException
    */
-  public OrderResponse orderWithoutPayment(OrderRequest request)
-      throws GongmingConnectionException, GongmingApplicationException {
+  public OrderWithPaymentResponse orderWithPayment(GongmingRequest request)
+      throws GongmingApplicationException, GongmingConnectionException {
 
-    URL path = getPath(ORDER_WITHOUT_PAYMENT);
-    OrderResponse response = POST(path, request, OrderResponse.class);
+    return call(ORDER_WITH_PAYMENT, true, request, OrderWithPaymentResponse.class);
+  }
 
-    if (response.code != GMResponseCode.COMMON_SUCCESS) {
-      throw new GongmingApplicationException(response.code.toString(), response.errorMessage);
-    }
-    return response;
+  /**
+   * 赎回并体现
+   *
+   * @param request 赎回请求
+   * @return 赎回请求结果
+   * @throws GongmingApplicationException
+   * @throws GongmingConnectionException
+   */
+  public RedeemResponse redeem(GongmingRequest request)
+      throws GongmingApplicationException, GongmingConnectionException {
+
+    return call(REDEEM, true, request, RedeemResponse.class);
   }
 
   /**
@@ -139,16 +159,10 @@ public class Gongming {
    * @throws GongmingConnectionException  连接异常
    * @throws GongmingApplicationException 后台异常
    */
-  public QueryOrderResponse queryOrder(QueryOrderRequest request)
+  public QueryOrderResponse queryOrder(GongmingRequest request)
       throws GongmingConnectionException, GongmingApplicationException {
 
-    URL path = getPath(QUERY_ORDER);
-    QueryOrderResponse response = GET(path, request, QueryOrderResponse.class);
-
-    if (response.code != GMResponseCode.COMMON_SUCCESS) {
-      throw new GongmingApplicationException(response.code.toString(), response.errorMessage);
-    }
-    return response;
+    return call(QUERY_ORDER, false, request, QueryOrderResponse.class);
   }
 
   /**
@@ -159,16 +173,10 @@ public class Gongming {
    * @throws GongmingConnectionException  连接异常
    * @throws GongmingApplicationException 后台异常
    */
-  public QueryOrdersByDateResponse queryOrderByDate(QueryOrdersByDateRequest request)
+  public QueryOrdersByDateResponse queryOrderByDate(GongmingRequest request)
       throws GongmingConnectionException, GongmingApplicationException {
 
-    URL path = getPath(QUERY_ORDERS_BY_DATE);
-    QueryOrdersByDateResponse response = GET(path, request, QueryOrdersByDateResponse.class);
-
-    if (response.code != GMResponseCode.COMMON_SUCCESS) {
-      throw new GongmingApplicationException(response.code.toString(), response.errorMessage);
-    }
-    return response;
+    return call(QUERY_ORDERS_BY_DATE, false, request, QueryOrdersByDateResponse.class);
   }
 
   /**
@@ -179,53 +187,45 @@ public class Gongming {
    * @throws GongmingConnectionException  连接异常
    * @throws GongmingApplicationException 后台异常
    */
-  public QueryOrderInterestResponse queryOrderInterest(QueryOrdersByDateRequest.QueryOrderInterestRequest request)
+  public QueryOrderInterestResponse queryOrderInterest(GongmingRequest request)
       throws GongmingConnectionException, GongmingApplicationException {
 
-    URL path = getPath(QUERY_ORDER_INTEREST);
-    QueryOrderInterestResponse response = GET(path, request, QueryOrderInterestResponse.class);
-
-    if (response.code != GMResponseCode.COMMON_SUCCESS) {
-      throw new GongmingApplicationException(response.code.toString(), response.errorMessage);
-    }
-    return response;
+    return call(QUERY_ORDER_INTEREST, false, request, QueryOrderInterestResponse.class);
   }
 
-  /**
-   * 确认支付结果
-   *
-   * @param request 确认支付结果请求
-   * @return ConfirmPaymentResponse 确认支付结果反馈
-   * @throws GongmingConnectionException  连接异常
-   * @throws GongmingApplicationException 后台异常
-   */
-  public ConfirmPaymentResponse confirmPayment(ConfirmPaymentRequest request)
-      throws GongmingConnectionException, GongmingApplicationException {
+  private <T extends GMResponseBase> T call(String path, Boolean isPost, GongmingRequest request, Class<T> responseType)
+      throws GongmingApplicationException, GongmingConnectionException {
 
-    URL path = getPath(CONFIRM_PAYMENT);
-    ConfirmPaymentResponse response = POST(path, request, ConfirmPaymentResponse.class);
+    URL url = getPath(path);
+    T response;
+
+    if (isPost) {
+      response = POST(url, request, responseType);
+    } else {
+      response = GET(url, request, responseType);
+    }
 
     if (response.code != GMResponseCode.COMMON_SUCCESS) {
       throw new GongmingApplicationException(response.code.toString(), response.errorMessage);
     }
+
     return response;
   }
 
   private URL getPath(String path) throws GongmingConnectionException {
     URL queryURL = null;
     try {
-      if (PORT != null) {
-        queryURL = new URL(PROTOCOL, HOST, PORT, path);
-      } else {
-        queryURL = new URL(PROTOCOL, HOST, path);
-      }
+      queryURL = (PORT != null ?
+          new URL(PROTOCOL, HOST, PORT, path) :
+          new URL(PROTOCOL, HOST, path));
     } catch (MalformedURLException e) {
       e.printStackTrace();
     }
+
     return queryURL;
   }
 
-  private <T extends GMResponseBase> T GET(URL url, GMRequestBase request, Class<T> responseType)
+  private <T extends GMResponseBase> T GET(URL url, GongmingRequest request, Class<T> responseType)
       throws GongmingConnectionException {
 
     RestTemplate restTemplate = new RestTemplate();
@@ -238,14 +238,15 @@ public class Gongming {
       response = responseEntity.getBody();
     } catch (HttpStatusCodeException e) {
       // This exception has status code, e.g. 404 Not Found
-      throw new GongmingConnectionException(e.getStatusCode(), e);
+      throw new GongmingConnectionException(e.getStatusCode(), e.getResponseBodyAsString(), e);
     } catch (InvalidKeyException e) {
       throw new GongmingConnectionException("商户密钥不合法", e);
     }
+
     return response;
   }
 
-  private <T extends GMResponseBase> T POST(URL url, GMRequestBase request, Class<T> responseType)
+  private <T extends GMResponseBase> T POST(URL url, GongmingRequest request, Class<T> responseType)
       throws GongmingConnectionException {
 
     HttpHeaders headers = new HttpHeaders();
@@ -261,10 +262,11 @@ public class Gongming {
       response = responseEntity.getBody();
     } catch (HttpStatusCodeException e) {
       // This exception has status code, e.g. 404 Not Found
-      throw new GongmingConnectionException(e.getStatusCode(), e);
+      throw new GongmingConnectionException(e.getStatusCode(), e.getResponseBodyAsString(), e);
     } catch (InvalidKeyException e) {
       throw new GongmingConnectionException("商户密钥不合法", e);
     }
+
     return response;
   }
 

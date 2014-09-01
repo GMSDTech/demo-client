@@ -8,17 +8,26 @@ package com.gmsd.model;
  * 性别的枚举类
  */
 public enum Gender {
-  MALE(1),
-  FEMALE(2);
+  // 特别注意：此处序数将存入数据库，所以请勿改变已有元素的顺序！
+  UNKNOWN("保密"),
+  MALE("男"),
+  FEMALE("女");
 
-  private static final String MALE_DESC = "男";
-  private int index;
+  private String name;
 
-  Gender(int index) {
-    this.index = index;
+  Gender(String name) {
+    this.name = name;
   }
 
   public static Gender buildGender(String genderStr) {
-    return genderStr.equals(MALE_DESC) ? MALE : FEMALE;
+    return
+      MALE.name.equals(genderStr) ? MALE :
+        FEMALE.name.equals(genderStr) ? FEMALE :
+          UNKNOWN;
+  }
+
+  @Override
+  public String toString() {
+    return name;
   }
 }

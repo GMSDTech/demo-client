@@ -25,6 +25,11 @@ public class GongmingConnectionException extends GongmingException {
     this.httpStatus = status;
   }
 
+  public GongmingConnectionException(HttpStatus status, String message, Exception e) {
+    super(message, e);
+    this.httpStatus = status;
+  }
+
   @Override
   public String toString() {
     return "GongmingConnectionException: httpStatus=" + httpStatus + ", message=" + this.getMessage();
