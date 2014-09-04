@@ -85,22 +85,28 @@ public class Plan {
   public String paidAmount;
 
   /**
-   * 创建时间
-   */
-  public Long createTimestamp;
-
-  /**
    * 计划类别
    */
   public PlanType type;
 
   /**
-   * 计划状态
-   */
-  public PlanStatus status;
-
-  /**
-   * 销售方式
+   * 销售类别
    */
   public SaleType saleType;
+
+  /**
+   * 还款方式
+   */
+  public RefundType refundType;
+
+  /**
+   * 是否可主动赎回
+   */
+  public Integer redeem;
+
+  /**
+   * 售卖截止日期
+   */
+  public String endDate;
+
 }

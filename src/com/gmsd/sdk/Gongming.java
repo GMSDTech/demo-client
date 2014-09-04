@@ -22,7 +22,7 @@ import java.security.InvalidKeyException;
 public class Gongming {
 
   private static final String PROTOCOL = "https";
-  private static final String HOST = "api-test.gongmingkeji.com";
+  private static final String HOST = "admin-test.gongmingkeji.com";
   private static final Integer PORT = null;
 
   private Long merchantId;
@@ -33,6 +33,7 @@ public class Gongming {
   private static final String CREATE_USER = "/v1/createUser";
   private static final String BIND_BANK_CARD = "/v1/bindBankCard";
   private static final String UPDATE_USER = "/v1/updateUser";
+  private static final String UNBIND_BANK_CARD = "/v1/unbindBankCard";
   private static final String QUERY_USER_BY_IDENTITY_NUMBER = "/v1/queryUserByIdentityNumber";
 
   private static final String ORDER_WITH_PAYMENT = "/v1/orderWithPayment";
@@ -82,7 +83,7 @@ public class Gongming {
   }
 
   /**
-   * 支付平台绑卡
+   * 支付平台绑定银行卡
    *
    * @param request 绑卡请求
    * @return 请求结果
@@ -107,6 +108,20 @@ public class Gongming {
       throws GongmingApplicationException, GongmingConnectionException {
 
     return call(UPDATE_USER, true, request, UpdateUserResponse.class);
+  }
+
+  /**
+   * 银行卡解除绑定
+   *
+   * @param request
+   * @return
+   * @throws GongmingApplicationException
+   * @throws GongmingConnectionException
+   */
+  public UnbindBankCardResponse unbindBankCard(GongmingRequest request)
+    throws GongmingApplicationException, GongmingConnectionException {
+
+    return call(UNBIND_BANK_CARD, true, request, UnbindBankCardResponse.class);
   }
 
   /**

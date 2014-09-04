@@ -4,6 +4,9 @@
 
 package com.gmsd.model;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * 理财账户
  */
@@ -13,7 +16,7 @@ public class User {
    * 构造方法
    *
    * @param id                 id
-   * @param identityCardNumber 身份证号
+   * @param userIdentityNumber 身份证号
    * @param name               用户姓名
    * @param phoneNumber        手机号
    * @param nickname           昵称
@@ -21,9 +24,9 @@ public class User {
    * @param address            地址
    * @param educationLevel     教育程度
    */
-  public User(Long id, String identityCardNumber, String name, String phoneNumber, String nickname, Gender gender, String address, String educationLevel) {
+  public User(Long id, String userIdentityNumber, String name, String phoneNumber, String nickname, Gender gender, String address, String educationLevel) {
     this.id = id;
-    this.identityCardNumber = identityCardNumber;
+    this.userIdentityNumber = userIdentityNumber;
     this.name = name;
     this.phoneNumber = phoneNumber;
     this.nickname = nickname;
@@ -44,7 +47,7 @@ public class User {
   /**
    * 身份证号码
    */
-  public String identityCardNumber;
+  public String userIdentityNumber;
 
   /**
    * 姓名
@@ -89,20 +92,28 @@ public class User {
   /**
    * 创建时间
    */
-  public Long createTimestamp;
+  public String createTimestamp;
+
+  /**
+   * 银行账户列表
+   */
+  public BankAccount[] bankAccounts;
 
   @Override
   public String toString() {
     return "User{" +
         "id=" + id +
-        ", identityCardNumber='" + identityCardNumber + '\'' +
+        ", userIdentityNumber='" + userIdentityNumber + '\'' +
         ", name='" + name + '\'' +
+        ", merchantId=" + merchantId +
         ", phoneNumber='" + phoneNumber + '\'' +
+        ", email='" + email + '\'' +
         ", nickname='" + nickname + '\'' +
         ", gender=" + gender +
         ", address='" + address + '\'' +
         ", educationLevel='" + educationLevel + '\'' +
-        ", createTimestamp='" + createTimestamp + "'" +
+        ", createTimestamp='" + createTimestamp + '\'' +
+        ", bankAccounts=" + Arrays.toString(bankAccounts) +
         '}';
   }
 }

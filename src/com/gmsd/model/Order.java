@@ -19,44 +19,31 @@ public class Order {
 
   /**
    * 有参数构造方法
-   *
-   * @param id            id
-   * @param userId        购买人id
-   * @param planId        计划id
-   * @param merchantId    商户号
-   * @param orderAmount   订单金额
-   * @param successAmount 扣款金额
-   * @param createDate    生成日期
-   * @param effectiveDate 生效日期
-   * @param endDate       结束日期
-   * @param status        订单状态
    */
-  public Order(Long id,
+  public Order(Long merchantRequestId,
                Long userId,
                Long planId,
-               Long merchantId,
                String orderAmount,
                String successAmount,
-               String createDate,
+               String merchantOrderDate,
                String effectiveDate,
                String endDate,
                OrderStatus status) {
-    this.id = id;
+    this.merchantRequestId = merchantRequestId;
     this.userId = userId;
     this.planId = planId;
-    this.merchantId = merchantId;
     this.orderAmount = orderAmount;
     this.successAmount = successAmount;
-    this.createDate = createDate;
+    this.merchantOrderDate = merchantOrderDate;
     this.effectiveDate = effectiveDate;
     this.endDate = endDate;
     this.status = status;
   }
 
   /**
-   * 订单id
+   * 商户订单号
    */
-  public Long id;
+  public Long merchantRequestId;
 
   /**
    * 下单用户id
@@ -69,11 +56,6 @@ public class Order {
   public Long planId;
 
   /**
-   * 订单的商户号
-   */
-  public Long merchantId;
-
-  /**
    * 下单金额
    */
   public String orderAmount;
@@ -84,17 +66,17 @@ public class Order {
   public String successAmount;
 
   /**
-   * 下单时间 YYYY-MM-DD HH:mm:ss Z
+   * 商户订单日期 yyyy-mm-dd
    */
-  public String createDate;
+  public String merchantOrderDate;
 
   /**
-   * 订单完成支付和满标后，实际生效时间 YYYY-MM-dd
+   * 订单生效日期 yyyy-mm-dd HH:mm:ss Z
    */
   public String effectiveDate;
 
   /**
-   * 预期还款结束日期 YYYY-MM-dd
+   * 预期还款结束日期 yyyy-mm-dd
    */
   public String endDate;
 

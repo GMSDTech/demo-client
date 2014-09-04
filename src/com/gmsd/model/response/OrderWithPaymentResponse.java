@@ -9,11 +9,6 @@ package com.gmsd.model.response;
  */
 public class OrderWithPaymentResponse extends GMResponseBase {
   /**
-   * 订单号
-   */
-  public Long orderId;
-
-  /**
    * 成功申购金额
    */
   public String successAmount;
@@ -22,7 +17,6 @@ public class OrderWithPaymentResponse extends GMResponseBase {
   public String toString() {
     return "code=" + this.code + ", " +
         "errorMessage=" + this.errorMessage + ", " +
-        "orderId=" + this.orderId + ", " +
         "successAmount=" + this.successAmount;
   }
 }

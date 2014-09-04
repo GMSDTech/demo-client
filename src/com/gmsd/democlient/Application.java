@@ -39,7 +39,12 @@ public class Application {
           .addParameter("merchantId", merchantId.toString())            // 商户号
           .addParameter("userPhoneNumber", "18680008888")               // 手机号
           .addParameter("userIdentityNumber", userIdentityNumber)       // 身份证号
-          .addParameter("userName", "ManagerOfMoney");                  // 真实姓名
+          .addParameter("userName", "ManagerOfMoney")                   // 真实姓名
+          .addParameter("email", "somebody@somewhere.com")              // email 地址，可选
+          .addParameter("nickname", "Nickname")                         // 昵称，可选
+          .addParameter("gender", "Male")                               // 性别，可选
+          .addParameter("address", "Beijing")                           // 地址，可选
+          .addParameter("educationLevel", "Bachelor");                  // 学历，可选
       CreateUserResponse createUserResponse = gongming.createUser(createUserRequest);
       logger.info("创建理财账户成功，理财账户号" + createUserResponse.userId);
 
@@ -50,9 +55,12 @@ public class Application {
       GongmingRequest bindBankCardRequest = new GongmingRequest()
           .addParameter("merchantId", merchantId.toString())            // 商户号
           .addParameter("userId", userId.toString())                    // 用户ID
-          .addParameter("bankCode", "B007")                             // 银行编号 B007=招商银行
+          .addParameter("bankCode", "CMB")                              // 银行编号 CMB=招商银行
           .addParameter("bankAccountNumber", bankCardNumber)            // 银行卡号
-          .addParameter("bankPhoneNumber", "18680008888");              // 银行预留手机号
+          .addParameter("bankPhoneNumber", "18680008888")               // 银行预留手机号
+          .addParameter("bankProvince", "北京市")                        // 银行省份
+          .addParameter("bankCity", "北京市")                            // 银行市
+          .addParameter("bankBranchName", "朝阳门支行");                  // 支行名称
       BindBankCardResponse bindBankCardResponse = gongming.bindBankCard(bindBankCardRequest);
       logger.info("绑卡成功");
 
@@ -60,10 +68,11 @@ public class Application {
       GongmingRequest updateUserRequest = new GongmingRequest()
           .addParameter("merchantId", merchantId.toString())            // 商户号，必填
           .addParameter("userId", userId.toString())                    // 用户ID，必填
-          .addParameter("email", "somebody@somewhere.com")              // 用户 email 地址，可选
-          .addParameter("nickname", "Nick")                             // 用户昵称，可选
+          .addParameter("userPhoneNumber", "186800009999")              // 手机号码，可选
+          .addParameter("email", "somebody@somewhereelse.com")          // 用户 email 地址，可选
+          .addParameter("nickname", "Nickname")                         // 用户昵称，可选
           .addParameter("gender", "男")                                 // 用户性别，可选
-          .addParameter("adderss", "北京市朝阳区朝外SOHO")                // 用户地址，可选
+          .addParameter("address", "北京市朝阳区朝外SOHO")                // 用户地址，可选
           .addParameter("educationLevel", "本科");                      // 用户学历，可选
       UpdateUserResponse updateUserResponse = gongming.updateUser(updateUserRequest);
       logger.info("更新用户信息成功");
@@ -87,8 +96,8 @@ public class Application {
         return;
       }
 
-      Long planId = queryPlansResponse.plans.get(0).id;
-      String orderAmount = queryPlansResponse.plans.get(0).minAmount;
+      Long planId = 1L; // = queryPlansResponse.plans.get(0).id;
+      String orderAmount = "100"; // queryPlansResponse.plans.get(0).minAmount;
       String merchantRequestId = String.format("%015d", new Random().nextInt(1000000000));
       String today = simpleDateFormat.format(new Date());
 
@@ -97,23 +106,20 @@ public class Application {
           .addParameter("merchantId", merchantId.toString())            // 商户号
           .addParameter("userId", userId.toString())                    // 理财账户号
           .addParameter("orderAmount", orderAmount)                     // 申购金额
-          .addParameter("merchantRequestId", merchantRequestId)         // 商户请求ID
+          .addParameter("merchantRequestId", merchantRequestId)         // 商户订单号
           .addParameter("planId", planId.toString())                    // 计划ID
-          .addParameter("orderDate", today);                            // 订单日期
+          .addParameter("merchantOrderDate", today)                     // 订单日期
+          .addParameter("bankAccountNumber", bankCardNumber);           // 银行卡号
       OrderWithPaymentResponse orderWithPaymentResponse = gongming.orderWithPayment(orderWithPaymentRequest);
-      logger.info("理财计划申购成功，订单号" + orderWithPaymentResponse.orderId + "，" +
-          "成功申购" + orderWithPaymentResponse.successAmount + "元");
-
-      Long orderId = orderWithPaymentResponse.orderId;
+      logger.info("理财计划申购成功，成功申购" + orderWithPaymentResponse.successAmount + "元");
 
       // 若上一个申购操作成功，查询订单状态
       logger.info("查询订单");
       GongmingRequest queryOrderRequest = new GongmingRequest()
           .addParameter("merchantId", merchantId.toString())            // 商户号
-          .addParameter("orderId", orderId.toString());                 // 订单号
+          .addParameter("merchantRequestId", merchantRequestId);                 // 订单号
       QueryOrderResponse queryOrderResponse = gongming.queryOrder(queryOrderRequest);
       logger.info("订单查询成功，状态为" + queryOrderResponse.order.status.toString() + "");
-
 
       String startDate = simpleDateFormat.format(new Date());
       String endDate = simpleDateFormat.format(new Date(System.currentTimeMillis() + 1 * MILLISECONDS_PER_DAY));
@@ -129,7 +135,7 @@ public class Application {
       logger.info("查询订单收益");
       GongmingRequest queryOrderInterestRequest = new GongmingRequest()
           .addParameter("merchantId", merchantId.toString())            // 商户号
-          .addParameter("orderId", orderId.toString());                 // 订单号
+          .addParameter("merchantRequestId", merchantRequestId);        // 订单号
       QueryOrderInterestResponse queryOrderInterestResponse = gongming.queryOrderInterest(queryOrderInterestRequest);
       logger.info("查询订单收益成功，当日收益" + queryOrderInterestResponse.dailyInterest + "元，" +
           "累计收益" + queryOrderInterestResponse.totalInterest + "元");
@@ -137,9 +143,17 @@ public class Application {
       logger.info("申请赎回");
       GongmingRequest redeemRequest = new GongmingRequest()
           .addParameter("merchantId", merchantId.toString())            // 商户号
-          .addParameter("orderId", orderId.toString());                 // 订单号
+          .addParameter("merchantRequestId", merchantRequestId);        // 商户订单号
       RedeemResponse redeemResponse = gongming.redeem(redeemRequest);
       logger.info("赎回申请已收到");
+
+      logger.info("解除银行卡绑定");
+      GongmingRequest unbindBankCardRequest = new GongmingRequest()
+          .addParameter("merchantId", merchantId.toString())            // 商户号
+          .addParameter("userId", userId.toString())                    // 用户ID
+          .addParameter("bankAccountNumber", bankCardNumber);           // 银行卡号
+      UnbindBankCardResponse unbindBankCardResponse = gongming.unbindBankCard(unbindBankCardRequest);
+      logger.info("解除银行卡绑定成功");
 
     } catch (GongmingConnectionException e) {
       logger.info("连接失败：" + e.toString());
