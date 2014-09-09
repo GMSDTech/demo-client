@@ -24,6 +24,7 @@ public class Application {
 
   private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
   private static final Long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000L;
+  private static final Integer ID_PRE_CHECK_BIT_SIZE = 17;
 
   public Application() {
   }
@@ -32,7 +33,7 @@ public class Application {
     Gongming gongming = new Gongming(merchantId, merchantSecret);
 
     try {
-      String userIdentityNumber = "1" + String.format("%017d", new Random().nextInt(1000000000));
+      String userIdentityNumber = generateIdCardNumber();
 
       logger.info("创建理财账户");
       GongmingRequest createUserRequest = new GongmingRequest()
@@ -68,7 +69,7 @@ public class Application {
       GongmingRequest updateUserRequest = new GongmingRequest()
           .addParameter("merchantId", merchantId.toString())            // 商户号，必填
           .addParameter("userId", userId.toString())                    // 用户ID，必填
-          .addParameter("userPhoneNumber", "186800009999")              // 手机号码，可选
+          .addParameter("userPhoneNumber", "18680009999")               // 手机号码，可选
           .addParameter("email", "somebody@somewhereelse.com")          // 用户 email 地址，可选
           .addParameter("nickname", "Nickname")                         // 用户昵称，可选
           .addParameter("gender", "男")                                 // 用户性别，可选
@@ -96,8 +97,8 @@ public class Application {
         return;
       }
 
-      Long planId = 1L; // = queryPlansResponse.plans.get(0).id;
-      String orderAmount = "100"; // queryPlansResponse.plans.get(0).minAmount;
+      Long planId = queryPlansResponse.plans.get(0).id;
+      String orderAmount = queryPlansResponse.plans.get(0).minAmount;
       String merchantRequestId = String.format("%015d", new Random().nextInt(1000000000));
       String today = simpleDateFormat.format(new Date());
 
@@ -117,7 +118,7 @@ public class Application {
       logger.info("查询订单");
       GongmingRequest queryOrderRequest = new GongmingRequest()
           .addParameter("merchantId", merchantId.toString())            // 商户号
-          .addParameter("merchantRequestId", merchantRequestId);                 // 订单号
+          .addParameter("merchantRequestId", merchantRequestId);        // 订单号
       QueryOrderResponse queryOrderResponse = gongming.queryOrder(queryOrderRequest);
       logger.info("订单查询成功，状态为" + queryOrderResponse.order.status.toString() + "");
 
@@ -153,12 +154,101 @@ public class Application {
           .addParameter("userId", userId.toString())                    // 用户ID
           .addParameter("bankAccountNumber", bankCardNumber);           // 银行卡号
       UnbindBankCardResponse unbindBankCardResponse = gongming.unbindBankCard(unbindBankCardRequest);
-      logger.info("解除银行卡绑定成功");
+      logger.info("解除银行卡绑定成功: " + unbindBankCardResponse);
 
     } catch (GongmingConnectionException e) {
       logger.info("连接失败：" + e.toString());
     } catch (GongmingApplicationException e) {
       logger.info("后台处理异常：" + e.toString());
     }
+  }
+
+  /*
+   * <p>
+   * 随机生成 18 位身份证号。此方法非必要，只需使用真实身份证号即可。
+   * </p>
+   * 根据〖中华人民共和国国家标准GB11643-1999〗中有关公民身份号码的规定，公民身份号码是特征组合码，
+   * 由十七位数字本体码和一位数字校验码组成。 排列顺序从左至右依次为：六位数字地址码，八位数字出生日期码，三位数字顺序码和一位数字校验码。
+   * <p>
+   * 顺序码: 表示在同一地址码所标识的区域范围内，对同年、同月、同 日出生的人编定的顺序号，顺序码的奇数分配给男性，偶数分配 给女性。
+   * </p>
+   * <p>
+   * 1.前1、2位数字表示：所在省份的代码； 2.第3、4位数字表示：所在城市的代码； 3.第5、6位数字表示：所在区县的代码；
+   * 4.第7~14位数字表示：出生年、月、日； 5.第15、16位数字表示：所在地的派出所的代码；
+   * 6.第17位数字表示性别：奇数表示男性，偶数表示女性；
+   * 7.第18位数字是校检码：也有的说是个人信息码，一般是随计算机的随机产生，用来检验身份证的正确性 。校检码可以是0~9的数字，有时也用x表示。
+   * </p>
+   * <p>
+   * 第十八位数字(校验码)的计算方法为： 1.将前面的身份证号码17位数分别乘以不同的系数。从第一位到第十七位的系数分别为：7 9 10 5 8 4
+   * 2 1 6 3 7 9 10 5 8 4 2
+   * </p>
+   * <p>
+   * 2.将这17位数字和系数相乘的结果相加。
+   * </p>
+   * <p>
+   * 3.用加出来和除以11，看余数是多少？
+   * </p>
+   * 4.余数只可能有0 1 2 3 4 5 6 7 8 9 10这11个数字。其分别对应的最后一位身份证的号码为1 0 X 9 8 7 6 5 4 3
+   * 2。
+   * <p>
+   * 5.通过上面得知如果余数是2，就会在身份证的第18位数字上出现罗马数字的Ⅹ。如果余数是10，身份证的最后一位号码就是2。
+   * </p>
+   */
+  private static String generateIdCardNumber() {
+    // 1-6 位，北京市朝阳区
+    String idCardDistrict = "110105";
+
+    // 7-14 位，1970-01-01 后约 20 年内的随机日期，不考虑闰年因素
+    SimpleDateFormat birthdayFormat = new SimpleDateFormat("yyyyMMdd");
+    String idCardBirthday = birthdayFormat.format(new Date(MILLISECONDS_PER_DAY * (new Random().nextInt(365 * 20))));
+
+    // 15-17 位，顺序码，使用奇数（男性）
+    Integer sequence = new Random().nextInt(1000);
+    if ((sequence % 2 == 0)) {
+      sequence = (sequence + 1) % 1000;
+    }
+    String idCardSequence = String.format("%03d", sequence);
+
+    int idCardBits[] = getIdCardBits(idCardDistrict + idCardBirthday + idCardSequence);
+
+    // 18 位，检验码，根据前 17 位数字生成
+    String idCardCheckCode = getCheckCode(idCardBits);
+
+    return idCardDistrict + idCardBirthday + idCardSequence + idCardCheckCode;
+  }
+
+  /*
+   * 把身份证号前 17 位转成数字数组
+   */
+  private static int[] getIdCardBits(String idCard17) {
+    assert(idCard17.length() == ID_PRE_CHECK_BIT_SIZE);
+
+    int idCardBits[] = new int[ID_PRE_CHECK_BIT_SIZE];
+    for (int i = 0; i < ID_PRE_CHECK_BIT_SIZE; i++) {
+      idCardBits[i] = Integer.parseInt(idCard17.substring(i, i + 1));
+    }
+    return idCardBits;
+  }
+
+  /*
+   * 生成身份证号第 18 位检验码
+   * 步骤：
+   * 1. 生成身份证前 17 位的加权和
+   * 2. 加权和余 11 后得到的 0 ~ 10 数字，对应一个校验数字或字母'X'
+   */
+  private static String getCheckCode(int[] idCardBits) {
+    final int POWER[] = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
+    final char CHECK_CODES[] = {'1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'};
+    final int CHECK_NUMERATOR = 11;
+
+    assert(idCardBits.length == ID_PRE_CHECK_BIT_SIZE);
+
+    Integer powerSum = 0;
+    for (int i = 0; i < ID_PRE_CHECK_BIT_SIZE; i++) {
+      powerSum += idCardBits[i] * POWER[i];
+    }
+
+    char checkCode = CHECK_CODES[powerSum % CHECK_NUMERATOR];
+    return String.valueOf(checkCode);
   }
 }
