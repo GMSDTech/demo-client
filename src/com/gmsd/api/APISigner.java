@@ -8,6 +8,7 @@ import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
@@ -27,10 +28,10 @@ public class APISigner {
       return null;
     }
 
-    SecretKeySpec secret_key = new SecretKeySpec(key.getBytes(), HMAC_SHA256);
+    SecretKeySpec secret_key = new SecretKeySpec(key.getBytes(Charset.forName("UTF-8")), HMAC_SHA256);
     sha256HMAC.init(secret_key);
 
-    return Hex.encodeHexString(sha256HMAC.doFinal(data.getBytes()));
+    return Hex.encodeHexString(sha256HMAC.doFinal(data.getBytes(Charset.forName("UTF-8"))));
   }
 }
 

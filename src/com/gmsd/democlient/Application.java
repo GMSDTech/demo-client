@@ -59,9 +59,9 @@ public class Application {
           .addParameter("bankCode", "CMB")                              // 银行编号 CMB=招商银行
           .addParameter("bankAccountNumber", bankCardNumber)            // 银行卡号
           .addParameter("bankPhoneNumber", "18680008888")               // 银行预留手机号
-          .addParameter("bankProvince", "北京市")                        // 银行省份
-          .addParameter("bankCity", "北京市")                            // 银行市
-          .addParameter("bankBranchName", "朝阳门支行");                  // 支行名称
+          .addParameter("bankProvince", "北京市")                        // 银行省份，可选
+          .addParameter("bankCity", "北京市")                            // 银行市，可选
+          .addParameter("bankBranchName", "朝阳门支行");                  // 支行名称，可选
       BindBankCardResponse bindBankCardResponse = gongming.bindBankCard(bindBankCardRequest);
       logger.info("绑卡成功");
 

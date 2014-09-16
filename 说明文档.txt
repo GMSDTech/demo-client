@@ -5,14 +5,7 @@
 1. 程序框架说明
 此 demo 客户端演示如何与共鸣后台接口交互，可作为合作伙伴开发共鸣交互接口的 SDK，也可作为自行开发交互接口的参考。
 
-此 demo 客户端使用 Java 编写，选用 Gradle 框架编译环境（http://www.gradle.org/），框架配置文件为 build.gradle。所有开放接口使用HTTPS 协议加密传输，方式为 GET 或 POST。共鸣后台使用中国金融认证中心（http://www.cfca.com.cn/，以下简称 CFCA）签发的证书加密传输数据，客户端 Java 环境需要导入 CFCA 的根证书以保证客户端与共鸣后台 SSL 协议握手成功。
-
-2. CFCA 根证书导入
-根证书已存放在 demo-client-master/cacert 目录下，文件名为 CFCA_GT_CA.crt，客户也可到 CFCA 网站自行下载。找到当前环境的 JVM 所在路径，以 MacBook 为例，运行以下命令导入根证书：
-
-$ sudo keytool -import -alias CFCA -keystore /Library/Java/JavaVirtualMachines/jdk1.7.0_60.jdk/Contents/Home/jre/lib/security/cacerts -file cacerts/CFCA_GT_CA.crt
-
-注：第一次输入的密码为 root 密码（如果以非 root 用户运行命令），第二次输入密码为证书库默认密码，为 "changeit"。
+此 demo 客户端使用 Java 编写，选用 Gradle 框架编译环境（http://www.gradle.org/），框架配置文件为 build.gradle。所有开放接口使用HTTPS 协议加密传输，方式为 GET 或 POST。共鸣后台使用 VeriSign 签发的证书加密传输数据，客户端 Java 环境 1.6 的版本都自带信任支持。
 
 
 2. 编译程序
