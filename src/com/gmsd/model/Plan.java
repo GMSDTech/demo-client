@@ -97,7 +97,7 @@ public class Plan {
   /**
    * 还款方式
    */
-  public RefundType refundType;
+  public RefundMethod refundType;
 
   /**
    * 是否可主动赎回

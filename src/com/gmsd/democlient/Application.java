@@ -19,8 +19,8 @@ public class Application {
 
   private static Logger logger = Logger.getLogger("application");
 
-  private static Long merchantId = 0L;             // 在此处输入商户ID
-  private static String merchantSecret = "";       // 在此处写入商户密钥
+  private static Long merchantId = 1L;             // 在此处输入商户ID
+  private static String merchantSecret = "ABCDEFG1234ABCDEFG1234QINGHUAI";       // 在此处写入商户密钥
 
   private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
   private static final Long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000L;
