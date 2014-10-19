@@ -129,6 +129,5 @@ public enum GMResponseCode {
     }
     throw new IllegalArgumentException("Invalid Status type code: " + value);
   }
-
 }
 
