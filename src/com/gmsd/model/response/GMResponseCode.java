@@ -4,9 +4,6 @@
 
 package com.gmsd.model.response;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-
 /**
  * 共鸣返回代码
  */
@@ -108,12 +105,12 @@ public enum GMResponseCode {
     return "[" + Integer.toString(this.value) + "] " + info;
   }
 
-  @JsonValue
+  @com.fasterxml.jackson.annotation.JsonValue
   public int value() {
     return this.value;
   }
 
-  @JsonCreator
+  @com.fasterxml.jackson.annotation.JsonCreator
   public static GMResponseCode fromInt(int value) {
     for (GMResponseCode type : GMResponseCode.values()) {
       if (type.value == value) {
@@ -122,5 +119,16 @@ public enum GMResponseCode {
     }
     throw new IllegalArgumentException("Invalid Status type code: " + value);
   }
+
+  @org.codehaus.jackson.annotate.JsonCreator
+  public static GMResponseCode fromInt2(int value) {
+    for (GMResponseCode type : GMResponseCode.values()) {
+      if (type.value == value) {
+        return type;
+      }
+    }
+    throw new IllegalArgumentException("Invalid Status type code: " + value);
+  }
+
 }
 
