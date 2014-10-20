@@ -24,7 +24,7 @@ $ ./gradlew build
 
 首次编译，Gradle 会自动从远程下载依赖的库（如 Spring 组件），请在有网络连接的环境进行首次编译。编译成功后，即可开始运行客户端程序：
 
-$ java -jar build/libs/gm-demo-client-0.1.0.jar
+$ java -jar build/libs/gm-demo-client-0.1.1.jar
 
 2.3 在 IntelliJ 下编译运行
 首先生成 IntelliJ 工程文件：
@@ -58,5 +58,4 @@ Hard-coded 部分：
 
   GongmingRequest
   QueryPlansResponse
-
 
